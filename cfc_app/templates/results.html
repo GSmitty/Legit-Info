@@ -21,7 +21,10 @@
         {% for law in laws %}
         <dt>{{ law.title }}  
         [{{ law.key }} | {{ law.location.longname }} | {{ law.impact.iname }}]</dt>
-        <dd><p>{{ law.summary }}</p></dt>
+        <dd><p>{{ law.summary }}<br>
+        {% if law.cite_url != None %}
+            Source: {{ law.cite_url|urlize }}</p>
+        {% endif %}
         {% empty %}
         <p>No legislation found.</p>
         {% endfor %}
