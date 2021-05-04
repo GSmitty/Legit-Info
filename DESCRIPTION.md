@@ -197,7 +197,7 @@ underscore character(_) and the changepassword does not.
 ```console
 $ cd Legit-Info
 $ pipenv shell
-(cfc) $ ./stage1 generate_password cfcadmin
+(cfc) $ ./stage1 generate_password
 **Using SQLite3**
 Lv5EN5HvRU
 
@@ -382,7 +382,7 @@ from Columbus OH as that is more specific.
 
 A list of legislation that matches the search criteria is found.  The 
 anonymous advocate may choose to "Print Results", "Save CSV File", or
-"Search Again".
+"Search Again". There is also a link included to the original pdf file.
 
 ### Subsection 2.3 Print Results
 
