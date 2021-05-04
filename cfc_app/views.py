@@ -24,6 +24,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db import models
 
 # Application imports
 from users.models import Profile
@@ -281,19 +282,56 @@ def search(request):
             form = SearchForm()             # blank search form
         else:
             crit = request.user.profile.criteria
-            form = SearchForm(instance=crit)  # pre-filled with profile
+            # pre-fill with profile
+            form = SearchForm(data={'location':crit.location, 'impacts':crit.impacts})
 
     else:
         # POST data submitted; process data.
 
-        form = SearchForm(data=request.POST)
-        if form.is_valid():
-            criteria = form.save()
-            criteria.set_text()
-            criteria.save()
-            crit_id = criteria.id
-            return redirect('cfc_app:results', search_id=crit_id)
+        data_dict = request.POST
+        print(data_dict)
+        location = None
+        if len(data_dict['city']) != 0:
+            location = data_dict['city']
+        elif len(data_dict['county']) != 0:
+            location = data_dict['county']
+        elif len(data_dict['state']) != 0:
+            location = data_dict['state']
+        else:
+            location = data_dict['country']
+        # Grabbing proper location for lowest in hierarchy
+        location_obj = Location.objects.get(pk=location)
+        impact_list = []
+        criteria = Criteria.objects.create()
+        for n in range(len(data_dict['impacts'])):
+            impact_list.append(Impact.objects.get(pk=int(data_dict['impacts'][n])))
+        criteria.impacts.set(impact_list)
+        criteria.location=(location_obj)
+        criteria.set_text()
+        crit_id = criteria.id
+        return redirect('cfc_app:results', search_id=crit_id)
 
+    context = {'form': form}
+    return render(request, 'search.html', context)
+
+def load_state(request):
+    """Request to get states from chosen country."""
+    country_id = request.GET.get('country')
+    form = SearchForm(data={'country': country_id})
+    context = {'form': form}
+    return render(request, 'search.html', context)
+
+def load_county(request):
+    """Request to get counties from chosen state."""
+    state_id = request.GET.get('state')
+    form = SearchForm(data={'state', state_id})
+    context = {'form': form}
+    return render(request, 'search.html', context)
+
+def load_city(request):
+    """Request to get cities from chosen county."""
+    county_id = request.GET.get('county')
+    form = SearchForm(data={'county': county_id})
     context = {'form': form}
     return render(request, 'search.html', context)
 

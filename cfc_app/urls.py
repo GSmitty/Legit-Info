@@ -19,6 +19,15 @@ urlpatterns = [
     # Page for starting a search
     path('search/', views.search, name='search'),
 
+    # Page for updating a search template (states)
+    path('search/stateload', views.load_state, name='stateload'),
+
+    # Page for updating a search template (county)
+    path('search/countyload', views.load_county, name='countyload'),
+
+    # Page for updating a search template (city)
+    path('search/cityload', views.load_city, name='cityload'),
+
     # Page for showing search results
     path('results/<int:search_id>/',
          views.results, name='results'),

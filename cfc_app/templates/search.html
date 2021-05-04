@@ -17,13 +17,77 @@ ul {
 
     <form action="{% url 'cfc_app:search' %}" method='post'>
         {% csrf_token %}
-        {{ form.as_p }}
+        <div class="fieldWrapper" id='country'>
+            {{ form.country }}
+        </div> <br>
+        <div class="fieldWrapper" id=state>
+            {{ form.state }}
+        </div> <br>
+        <div class="fieldWrapper" id=county>
+            {{ form.county }}
+        </div> <br>
+        <div class="fieldWrapper" id=city>
+            {{ form.city }}
+        </div> <br>
+        <div class="fieldWrapper">
+            {{ form.impacts }}
+        </div>
     <div class="row mx-auto">
       <button id="submit" name="submit" class="btn btn-lg btn-success mx-auto"
           value="1">Search Legislation</button>
     </div>
     </form>
 </div>
+
+<script>
+    $(country).change(function () {
+        var url = "search/stateload";
+        var countryId = $(country).val();
+
+        $.ajax({
+            url: url,
+            type: GET,
+            data: {
+                'country': countryId
+            },
+            success: function (response) {
+                window.location = response;
+            }
+        })
+    });
+
+    $(state).change(function () {
+        var url = "search/countyload";
+        var stateId = $(state).val();
+
+        $.ajax({
+            url: url,
+            type: GET,
+            data: {
+                'state': stateId
+            },
+            success: function (response) {
+                window.location = response;
+            }
+        })
+    });
+
+    $(county).change(function () {
+        var url = "search/cityload";
+        var countyId = $(county).val();
+
+        $.ajax({
+            url: url,
+            type: GET,
+            data: {
+                'county': countyId
+            },
+            success: function (response) {
+                window.location = response;
+            }
+        })
+    });
+</script>
 
 {% endblock content %}
 
